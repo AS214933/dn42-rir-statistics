@@ -1,0 +1,32 @@
+services:
+  dn42-rir-statistics:
+    build:
+      context: .
+    image: ghcr.io/example/dn42-rir-statistics:latest
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+      - "8730:8730"
+    volumes:
+      - dn42-rir-data:/data
+    command:
+      - serve
+      - --output-dir
+      - /data/public
+      - --cache-dir
+      - /data/cache/dn42-registry
+      - --web-host
+      - 0.0.0.0
+      - --web-port
+      - "8000"
+      - --rsync-host
+      - 0.0.0.0
+      - --rsync-port
+      - "8730"
+      - --rsync-config
+      - /data/rsyncd.conf
+      - --daily-at
+      - "03:00"
+
+volumes:
+  dn42-rir-data:

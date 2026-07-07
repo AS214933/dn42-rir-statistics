@@ -1,0 +1,11 @@
+.cache/
+.git/
+.github/
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+*.egg-info/
+*.pyc
+public/
+rsyncd.conf
+rsyncd.pid

@@ -105,6 +105,88 @@ Disable rsync when the binary is not installed:
 dn42-rir-statistics serve --no-rsync
 ```
 
+## Docker
+
+Build the image locally:
+
+```sh
+docker build -t dn42-rir-statistics:local .
+```
+
+Run the combined daily server:
+
+```sh
+docker run --rm \
+  --name dn42-rir-statistics \
+  -p 8000:8000 \
+  -p 8730:8730 \
+  -v dn42-rir-data:/data \
+  dn42-rir-statistics:local
+```
+
+The container stores generated files and the DN42 registry cache under `/data`.
+By default it runs:
+
+```sh
+dn42-rir-statistics serve \
+  --output-dir /data/public \
+  --cache-dir /data/cache/dn42-registry \
+  --web-host 0.0.0.0 \
+  --web-port 8000 \
+  --rsync-host 0.0.0.0 \
+  --rsync-port 8730 \
+  --rsync-config /data/rsyncd.conf \
+  --daily-at 03:00
+```
+
+Override the command to change ports, schedule, or source registry:
+
+```sh
+docker run --rm -p 8080:8080 -v dn42-rir-data:/data dn42-rir-statistics:local \
+  serve \
+  --output-dir /data/public \
+  --cache-dir /data/cache/dn42-registry \
+  --web-host 0.0.0.0 \
+  --web-port 8080 \
+  --rsync-host 0.0.0.0 \
+  --rsync-port 8730 \
+  --rsync-config /data/rsyncd.conf \
+  --daily-at 06:00
+```
+
+## Docker Compose
+
+The included `compose.yaml` is a local example. Update the `image` value before
+using it as a published deployment reference.
+
+```sh
+docker compose up -d --build
+```
+
+Generated files are available at:
+
+```text
+http://127.0.0.1:8000/stats/dn42/delegated-dn42-latest
+rsync://127.0.0.1:8730/stats/dn42/delegated-dn42-latest
+```
+
+## GitHub Container Registry
+
+The workflow in `.github/workflows/container.yml` builds multi-architecture
+images for `linux/amd64` and `linux/arm64`, then pushes them to GHCR on pushes
+to `main`, `master`, tags matching `v*`, and manual runs. Pull requests build
+the image without pushing it.
+
+The published image name is derived from the repository name and lowercased:
+
+```text
+ghcr.io/<owner>/<repository>
+```
+
+Repository settings must allow GitHub Actions to write packages. The workflow
+uses the built-in `GITHUB_TOKEN`; no separate registry token is required for
+normal same-repository GHCR publishing.
+
 ## References
 
 - APNIC RIR statistics exchange format:
