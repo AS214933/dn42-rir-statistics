@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dn42-rir-statistics"
+version = "0.1.0"
+description = "Generate and serve DN42 registry snapshots in RIR statistics format"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "DN42 RIR Statistics Maintainers" }]
+dependencies = []
+
+[project.scripts]
+dn42-rir-statistics = "dn42_rir_statistics.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
