@@ -2,7 +2,7 @@ services:
   dn42-rir-statistics:
     build:
       context: .
-    image: ghcr.io/example/dn42-rir-statistics:latest
+    image: ghcr.io/as214933/dn42-rir-statistics:latest
     restart: unless-stopped
     ports:
       - "8000:8000"
